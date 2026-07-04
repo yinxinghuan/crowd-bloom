@@ -13,7 +13,7 @@
 - `src/main.tsx`：入口文件，导入自动生成的 `game-id.ts` 后挂载 React。
 - `src/game-id.ts`：由 `scripts/sync-game-ids.py` 生成，绑定 `window.__GAME_UUID__`。
 - `src/App.tsx` / `src/App.less`：应用壳和全局 reset。
-- `src/CrowdBloom/CrowdBloom.tsx`：主 UI，渲染公共花、最近贡献者 strip、主按钮和头像缺失 sheet。
+- `src/CrowdBloom/CrowdBloom.tsx`：主 UI，渲染公共花、可点击头像花瓣、主按钮和头像缺失 sheet。
 - `src/CrowdBloom/CrowdBloom.less`：完整视觉系统、布局和动画。
 - `src/CrowdBloom/hooks/useCrowdBloom.ts`：当前用户资料、存档 mirror、社区花瓣读取、plant 行为、头像编辑系统调用。
 - `src/CrowdBloom/i18n/index.ts`：zh/en 轻量 i18n，所有用户可见文案走 `t()`。
@@ -30,7 +30,7 @@
 - 屏幕适配：`FIELD_W=390`、`FIELD_H=680`，根据 `window.innerWidth/innerHeight` 计算 scale，stage 保持 24px 圆角裁剪。
 - 存档：`useGameSave<BloomSave>('crowd-bloom')` 只用于初始读取和写入；代码用本地 `mirror` seeded once 作为 source of truth，避免 `savedData` stale overwrite。
 - 社区墙/公共物件：`refreshCommunity()` 调 `/note/aigram/ai/game/get/data/list`，遍历每个用户 save 的全部 `petals`，按 `createdAt` 降序取最新 50 个；本地 mirror 花瓣 optimistic merge 后按 `petal.id` dedupe。
-- 头像资料：当前用户和社区作者均通过 `/note/telegram/user/get/info/by/telegram_id` 读取 `name` 和 `head_url`；社区 strip 的其他用户头像+名字可点击打开 profile，自己显示 `你/YOU`。
+- 头像资料：当前用户和社区作者均通过 `/note/telegram/user/get/info/by/telegram_id` 读取 `name` 和 `head_url`；其他用户的头像花瓣可点击打开 profile，自己的花瓣只显示高亮。
 - 头像缺失：如果当前用户没有 `head_url`，主按钮打开 avatar-missing sheet；`Generate avatar / 去生成头像` 调用 `AW.PROFILE.EDIT`，离开 Aigram 环境时按钮禁用并展示提示。
 - 输入：游戏主动作使用 `onPointerDown`；社区作者 chip 在滚动 strip 内使用 `onClick` 并 `stopPropagation()`；键盘 `Space`/`Enter` 触发主动作。
 - 音频：首次 pointer 交互 `resumeAudio()`；点击、成功种下、缺头像和打开系统页分别触发合成音效，失败静默。

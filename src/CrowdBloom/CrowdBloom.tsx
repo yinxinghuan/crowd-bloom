@@ -6,7 +6,7 @@ import { useCrowdBloom } from './hooks/useCrowdBloom';
 import { playClick, playMissing, playOpen, playPlant, resumeAudio } from './utils/sounds';
 import './CrowdBloom.less';
 
-const RING_RADIUS: Record<number, number> = { 1: 92, 2: 142, 3: 194 };
+const RING_RADIUS: Record<number, number> = { 1: 78, 2: 116, 3: 152 };
 const aigramSrc = './img/aigram.svg';
 
 function demoPetals(): BloomPetal[] {
@@ -26,35 +26,64 @@ function initialFor(name?: string) {
   return (name || '?').trim().slice(0, 1).toUpperCase() || '?';
 }
 
-function AuthorChip({ petal }: { petal: BloomPetal }) {
-  const isSelf = !!petal.userId && petal.userId === new URLSearchParams(window.location.search).get('telegram_id');
-  if (isSelf) {
-    return <span className="cb-author cb-author--self">{t('you')}</span>;
+function PetalFace({
+  petal,
+  index,
+  currentUserId,
+}: {
+  petal: BloomPetal;
+  index: number;
+  currentUserId: string | null;
+}) {
+  const ring = RING_RADIUS[petal.ring] || 92;
+  const color = PETAL_COLORS[petal.colorIndex % PETAL_COLORS.length];
+  const isMine = !!currentUserId && petal.userId === currentUserId;
+  const canOpen = !!petal.userId && !isMine && isInAigram;
+  const content = (
+    <>
+      <span className="cb-petal__stem" aria-hidden />
+      <span className="cb-petal__body">
+        {petal.userAvatarUrl ? (
+          <img src={petal.userAvatarUrl} alt="" draggable={false} />
+        ) : (
+          <span className="cb-petal__initial">{initialFor(petal.userName)}</span>
+        )}
+      </span>
+    </>
+  );
+  const style = {
+    '--angle': `${petal.angle + index * 4}deg`,
+    '--radius': `${ring}px`,
+    '--color': color,
+    '--delay': `${-(petal.pulse % 3000)}ms`,
+    zIndex: 20 + index,
+  } as CSSProperties;
+
+  if (!canOpen) {
+    return (
+      <div
+        className={`cb-petal ${isMine ? 'cb-petal--mine' : ''}`}
+        style={style}
+        aria-label={petal.userName || t('demo')}
+      >
+        {content}
+      </div>
+    );
   }
-  if (!petal.userId) {
-    return <span className="cb-author cb-author--demo">{petal.userName || t('demo')}</span>;
-  }
+
   return (
     <button
       type="button"
-      className="cb-author"
-      disabled={!isInAigram}
+      className="cb-petal cb-petal--button"
+      style={style}
       onClick={ev => {
         ev.stopPropagation();
-        if (!isInAigram) return;
         playOpen();
         openAigramProfile(petal.userId);
       }}
       aria-label={t('openProfile', { n: petal.userName || 'user' })}
     >
-      <span className="cb-author__avatar" aria-hidden>
-        {petal.userAvatarUrl ? (
-          <img src={petal.userAvatarUrl} alt="" draggable={false} />
-        ) : (
-          <span>{initialFor(petal.userName)}</span>
-        )}
-      </span>
-      <span className="cb-author__name">{petal.userName || 'Aigram'}</span>
+      {content}
     </button>
   );
 }
@@ -127,48 +156,27 @@ export default function CrowdBloom() {
         </div>
 
         <header className="cb-header">
-          <div>
-            <h1>{t('title')}</h1>
-            <p>{t('subtitle')}</p>
-          </div>
-          <div className="cb-counts" aria-label="Bloom counters">
-            <span>{t('visible')}</span>
-            <strong>{bloom.visiblePetals.length || petals.length}</strong>
-            <span>{t('mine')}</span>
-            <strong>{bloom.ownPetals.length}</strong>
-          </div>
+          <span className="cb-header__mark" aria-hidden />
+          <span className="cb-header__kicker">{t('visible')} {bloom.visiblePetals.length || petals.length}</span>
+          <span className="cb-header__mine">{t('mine')} {bloom.ownPetals.length}</span>
         </header>
+
+        <section className="cb-title-lockup" aria-label={t('title')}>
+          <h1>{t('title')}</h1>
+          <p>{t('subtitle')}</p>
+        </section>
 
         <div className="cb-flower" aria-label={t('title')}>
           <div className="cb-flower__rings" aria-hidden />
           <div className="cb-flower__spin">
-            {petals.map((petal, index) => {
-              const ring = RING_RADIUS[petal.ring] || 92;
-              const color = PETAL_COLORS[petal.colorIndex % PETAL_COLORS.length];
-              const isMine = !!bloom.telegramId && petal.userId === bloom.telegramId;
-              return (
-                <div
-                  key={petal.id}
-                  className={`cb-petal ${isMine ? 'cb-petal--mine' : ''}`}
-                  style={{
-                    '--angle': `${petal.angle + index * 4}deg`,
-                    '--radius': `${ring}px`,
-                    '--color': color,
-                    '--delay': `${-(petal.pulse % 3000)}ms`,
-                    zIndex: 20 + index,
-                  } as CSSProperties}
-                >
-                  <span className="cb-petal__stem" aria-hidden />
-                  <span className="cb-petal__body">
-                    {petal.userAvatarUrl ? (
-                      <img src={petal.userAvatarUrl} alt="" draggable={false} />
-                    ) : (
-                      <span className="cb-petal__initial">{initialFor(petal.userName)}</span>
-                    )}
-                  </span>
-                </div>
-              );
-            })}
+            {petals.map((petal, index) => (
+              <PetalFace
+                key={petal.id}
+                petal={petal}
+                index={index}
+                currentUserId={bloom.telegramId}
+              />
+            ))}
           </div>
           <div className="cb-core">
             <span>{bloom.mode === 'planted' ? t('bloomed') : t('title')}</span>
@@ -180,14 +188,6 @@ export default function CrowdBloom() {
             {t('planted')}
           </div>
         )}
-
-        <section className="cb-strip" aria-label="Recent petals">
-          {petals.slice(0, 12).map(petal => (
-            <article key={`strip-${petal.id}`} className="cb-strip__item">
-              <AuthorChip petal={petal} />
-            </article>
-          ))}
-        </section>
 
         <div className="cb-actions">
           <button

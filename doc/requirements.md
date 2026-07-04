@@ -7,14 +7,15 @@ Crowd Bloom is a social collection toy where every player with an Aigram avatar 
 ## 2. Visual Design
 
 - Viewport is a fixed 390 x 680 portrait stage, scaled proportionally to fit the device and clipped with a 24px radius.
-- Background uses a late-night park gradient: `#071019` at the top, `#10251f` at 55%, and `#0c0f17` at the bottom, with 54 animated firefly dots sized 2-5px.
-- The shared flower sits centered at x=195, y=296. It has a 74px glass core, three petal rings, and 18px glowing stems.
-- Petal ring 1 uses radius 92px and 10 slots, ring 2 uses radius 142px and 16 slots, ring 3 uses radius 194px and 24 slots. Up to 50 newest petals are visible.
+- Background uses a flat midnight ink field `#09070b` with a ceremonial radial wash `rgba(245,177,199,0.10)` behind the artifact, 28 dust motes sized 1-3px, and 0.5px cream hairline rules.
+- The shared flower sits centered at x=195, y=310. It reads as a pressed-flower altar: a 78px moon-glass core, three petal rings, and thin cream orbit rules.
+- Petal ring 1 uses radius 78px and 10 slots, ring 2 uses radius 116px and 16 slots, ring 3 uses radius 152px and 24 slots. Up to 50 newest petals are visible.
 - Each petal is a 54 x 66px rounded oval with 999px radius, a 2px white translucent border, `0 0 22px` glow, and the player avatar cropped as a 42px circle in the center.
 - Petal colors rotate through `#ff6fb1`, `#75e6ff`, `#f7d65c`, `#a8ff7a`, `#b991ff`, and `#ff9d6c`.
 - Current player's newest petal gets an 86px pulsing halo, 1.8s loop, opacity 0.25-0.78.
-- Header text uses Inter/system sans-serif, title 26px/700, counters 12px/700 uppercase with 0.14em letter spacing.
-- The avatar-missing prompt is a bottom sheet 334px wide, 18px radius, dark translucent `rgba(9, 15, 24, 0.9)`, with a 56px empty avatar ring and a single primary button.
+- Header text uses a restrained editorial system: italic serif title 34px/400, utility captions 8.5px/700 uppercase with 0.38em letter spacing, and no dashboard-style cards.
+- The primary action is a bottom ritual press button 338px wide, 58px tall, 999px radius, cream fill `#f4e8d0`, dark text `#09070b`, and a 0.5px pink edge glow.
+- The avatar-missing prompt is a centered ritual notice 314px wide, no nested cards, with a 62px empty avatar seal, italic serif title 25px/400, and a single cream primary button.
 - Asset list: Aigram watermark SVG at bottom-right 62px wide; no external art assets are required because avatars come from `head_url`.
 
 ## 3. Game Mechanics
@@ -39,7 +40,7 @@ Crowd Bloom is a social collection toy where every player with an Aigram avatar 
 
 - Main action button uses `onPointerDown`. If the user has `head_url`, it plants a petal; if not, it opens the avatar-missing sheet.
 - Avatar-generation CTA uses `onPointerDown` and calls Aigram system function `AW.PROFILE.EDIT`; off-platform it stays visible but disabled.
-- Community author chips use `onClick`, not `onPointerDown`, because they sit inside a scrollable bottom strip. Tapping another user's avatar/name opens their Aigram profile.
+- Each visible avatar petal uses `onClick`, not `onPointerDown`. Tapping another user's petal opens their Aigram profile; self petals are not profile buttons.
 - Keyboard support: pressing `Space` or `Enter` while the stage is focused triggers the same plant-or-prompt action.
 - Touch action for the full game surface is `manipulation`; the bottom strip scrolls vertically and must not be blocked by pointerdown handlers.
 
