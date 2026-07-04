@@ -17,6 +17,7 @@ Crowd Bloom is a social collection toy where every player with an Aigram avatar 
 - The primary action is a bottom ritual press button 338px wide, 58px tall, 999px radius, cream fill `#f4e8d0`, dark text `#09070b`, and a 0.5px pink edge glow.
 - The avatar-missing prompt is a centered ritual notice 314px wide, no nested cards, with a 62px empty avatar seal, italic serif title 25px/400, and a single cream primary button.
 - Asset list: Aigram watermark SVG at bottom-right 62px wide; no external art assets are required because avatars come from `head_url`.
+- Non-Aigram browser preview defaults to a review page with four static stage previews: ready with avatar, missing avatar, planted feedback, and community bloom. `?play=1` bypasses the review page.
 
 ## 3. Game Mechanics
 
@@ -34,6 +35,7 @@ Crowd Bloom is a social collection toy where every player with an Aigram avatar 
 - The flower animates at 60fps through CSS transforms only: whole bloom rotates 0.6deg every second, each petal bobs 5px over a 2.8-4.1s loop.
 - Player can plant at most 1 petal every 45 seconds in the active session. Cooldown is shown as a numeric countdown on the main button.
 - If no community data is available, show 18 demo ghost petals with initials only; these demo petals are not saved and are replaced once data loads.
+- Outside Aigram, default URL renders the review page so the game can be judged without platform user data. Aigram iframe URLs with `api_origin` and `telegram_id` render the real game.
 - Sound effects use Web Audio only: profile loaded chime 480Hz to 720Hz for 0.08s, plant chord 392/523/659Hz for 0.18s, missing-avatar soft buzz 160Hz to 120Hz for 0.12s, button click 620Hz to 420Hz for 0.04s.
 
 ## 4. Controls
