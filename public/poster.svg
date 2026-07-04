@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#18362e"/>
+      <stop offset="58%" stop-color="#071019"/>
+      <stop offset="100%" stop-color="#0c0f17"/>
+    </radialGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="16" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <g opacity=".55">
+    <circle cx="132" cy="220" r="4" fill="#f7d65c"/>
+    <circle cx="828" cy="166" r="5" fill="#75e6ff"/>
+    <circle cx="740" cy="820" r="3" fill="#ff6fb1"/>
+    <circle cx="238" cy="758" r="4" fill="#a8ff7a"/>
+  </g>
+  <g transform="translate(512 500)" filter="url(#glow)">
+    <g fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="8">
+      <circle r="168"/>
+      <circle r="258"/>
+      <circle r="344"/>
+    </g>
+    <g>
+      <ellipse rx="52" ry="84" transform="rotate(0) translate(0 -168)" fill="#ff6fb1"/>
+      <ellipse rx="52" ry="84" transform="rotate(36) translate(0 -168)" fill="#75e6ff"/>
+      <ellipse rx="52" ry="84" transform="rotate(72) translate(0 -168)" fill="#f7d65c"/>
+      <ellipse rx="52" ry="84" transform="rotate(108) translate(0 -168)" fill="#a8ff7a"/>
+      <ellipse rx="52" ry="84" transform="rotate(144) translate(0 -168)" fill="#b991ff"/>
+      <ellipse rx="52" ry="84" transform="rotate(180) translate(0 -168)" fill="#ff9d6c"/>
+      <ellipse rx="52" ry="84" transform="rotate(216) translate(0 -168)" fill="#ff6fb1"/>
+      <ellipse rx="52" ry="84" transform="rotate(252) translate(0 -168)" fill="#75e6ff"/>
+      <ellipse rx="52" ry="84" transform="rotate(288) translate(0 -168)" fill="#f7d65c"/>
+      <ellipse rx="52" ry="84" transform="rotate(324) translate(0 -168)" fill="#a8ff7a"/>
+    </g>
+    <circle r="88" fill="#eefdf8" fill-opacity=".88"/>
+    <circle r="58" fill="#10251f"/>
+  </g>
+  <text x="512" y="892" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800" fill="#f6fff8">Crowd Bloom</text>
+</svg>
