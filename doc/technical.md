@@ -15,7 +15,8 @@
 - `src/App.tsx` / `src/App.less`：应用壳和全局 reset；非 Aigram 环境默认进入评审页，`?play=1` 可进入真实空环境。
 - `src/CrowdBloom/CrowdBloom.tsx`：主 UI，渲染公共花、可点击头像花瓣、主按钮和头像缺失 sheet。
 - `src/CrowdBloom/CrowdBloom.less`：完整视觉系统、布局和动画。
-- `src/CrowdBloom/ReviewPage.tsx` / `ReviewPage.less`：线上评审页，第一屏展示最终成品手机预览，后续静态展示 ready、missing-avatar、planted、community 四个状态；评审页使用内联 mock 头像还原真实头像花瓣形态，并解释迁移 zip。
+- `src/CrowdBloom/ReviewPage.tsx` / `ReviewPage.less`：线上评审页，第一屏展示最终成品手机预览，后续静态展示 ready、missing-avatar、planted、community 四个状态；评审页使用 `public/img/review-avatar-sheet.jpg` 的假头像照片 sheet 模拟真实 `head_url` 裁切效果，并解释迁移 zip。
+- `public/img/review-avatar-sheet.jpg`：仅评审页使用的 4x4 假头像照片合集；正式游戏不会引用它，生产环境直接渲染平台用户 `head_url` 原图。
 - `src/CrowdBloom/hooks/useCrowdBloom.ts`：当前用户资料、存档 mirror、社区花瓣读取、plant 行为、头像编辑系统调用。
 - `src/CrowdBloom/i18n/index.ts`：zh/en 轻量 i18n，所有用户可见文案走 `t()`。
 - `src/CrowdBloom/utils/sounds.ts`：Web Audio 合成音效。

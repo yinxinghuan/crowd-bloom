@@ -4,21 +4,15 @@ import './ReviewPage.less';
 
 const mockNames = ['Maya', 'Jun', 'Rae', 'Noor', 'Ari', 'Lux', 'Vee', 'Theo', 'Iris', 'Sol', 'Nia', 'Bo'];
 const ringRadius: Record<number, number> = { 1: 62, 2: 92, 3: 122 };
+const reviewAvatarSheet = './img/review-avatar-sheet.jpg';
 
-function mockAvatar(index: number) {
-  const hair = ['#19151f', '#4b2d24', '#2b2738', '#6b3a2a', '#101820', '#573b2e'][index % 6];
-  const skin = ['#f3c7a4', '#d9936a', '#7c513f', '#f0b88f', '#c97955', '#e5a87d'][index % 6];
-  const shirt = PETAL_COLORS[index % PETAL_COLORS.length];
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
-    <rect width="80" height="80" rx="40" fill="${shirt}"/>
-    <circle cx="40" cy="36" r="23" fill="${skin}"/>
-    <path d="M18 35c2-19 13-28 29-25 13 3 20 13 18 27-13-3-25-8-37-1-3 2-6 2-10-1z" fill="${hair}"/>
-    <circle cx="32" cy="38" r="2.4" fill="#150f14"/>
-    <circle cx="48" cy="38" r="2.4" fill="#150f14"/>
-    <path d="M32 51c5 4 12 4 17 0" fill="none" stroke="#150f14" stroke-width="3" stroke-linecap="round"/>
-    <path d="M18 80c3-15 15-24 22-24s19 9 22 24" fill="#f4e8d0" opacity=".82"/>
-  </svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+function avatarSheetStyle(index: number) {
+  const col = index % 4;
+  const row = Math.floor(index / 4) % 4;
+  return {
+    backgroundImage: `url(${reviewAvatarSheet})`,
+    backgroundPosition: `${col * 33.3333}% ${row * 33.3333}%`,
+  } as React.CSSProperties;
 }
 
 function makeMockPetals(count = 12): BloomPetal[] {
@@ -31,7 +25,7 @@ function makeMockPetals(count = 12): BloomPetal[] {
     pulse: i * 117,
     userId: `review-${i}`,
     userName: mockNames[i % mockNames.length],
-    userAvatarUrl: mockAvatar(i),
+    userAvatarUrl: reviewAvatarSheet,
   }));
 }
 
@@ -70,7 +64,7 @@ function ReviewFlower({
             <span className="cbr-petal__stem" />
             <span className="cbr-petal__face">
               {petal.userAvatarUrl ? (
-                <img src={petal.userAvatarUrl} alt="" draggable={false} />
+                <span className="cbr-petal__photo" style={avatarSheetStyle(index)} />
               ) : (
                 initialFor(isMine ? 'You' : petal.userName)
               )}
@@ -120,7 +114,7 @@ function MiniStage({
       )}
       <footer className="cbr-stage__action">
         <span className="cbr-action__avatar">
-          {isMissing ? '?' : <img src={mockAvatar(24)} alt="" draggable={false} />}
+          {isMissing ? '?' : <span className="cbr-action__photo" style={avatarSheetStyle(13)} />}
         </span>
         <span>{isMissing ? 'Generate avatar first' : 'Plant my face'}</span>
       </footer>
@@ -137,13 +131,13 @@ export default function ReviewPage() {
           <div className="cbr-hero__kicker">Crowd Bloom review build</div>
           <h1>最终上线画面</h1>
           <p>
-            玩家打开后看到的是右侧这张完整单屏：真实头像会被裁成圆形，
-            放进椭圆花瓣中央；底部按钮也显示自己的头像。
+            玩家打开后看到的是右侧这张完整单屏：平台头像原图会被裁成圆形，
+            放进椭圆花瓣中央；不会把用户头像改成卡通或插画。
           </p>
           <div className="cbr-showcase__legend">
             <span>椭圆外形 = 花瓣容器</span>
-            <span>圆形图片 = 玩家头像</span>
-            <span>粉色光晕 = 当前玩家</span>
+            <span>圆形照片 = 原头像裁切</span>
+            <span>不做卡通化处理</span>
           </div>
           <div className="cbr-hero__links">
             <a href="?play=1">查看真实游戏空环境</a>
@@ -173,7 +167,7 @@ export default function ReviewPage() {
 
       <section className="cbr-flow" aria-label="Review screens">
         <MiniStage
-            title="01 / 有头像"
+          title="01 / 有头像"
           caption="头像会显示在椭圆花瓣中央。"
           mode="ready"
         />
