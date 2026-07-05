@@ -5,6 +5,22 @@ import './ReviewPage.less';
 const mockNames = ['Maya', 'Jun', 'Rae', 'Noor', 'Ari', 'Lux', 'Vee', 'Theo', 'Iris', 'Sol', 'Nia', 'Bo'];
 const ringRadius: Record<number, number> = { 1: 62, 2: 92, 3: 122 };
 
+function mockAvatar(index: number) {
+  const hair = ['#19151f', '#4b2d24', '#2b2738', '#6b3a2a', '#101820', '#573b2e'][index % 6];
+  const skin = ['#f3c7a4', '#d9936a', '#7c513f', '#f0b88f', '#c97955', '#e5a87d'][index % 6];
+  const shirt = PETAL_COLORS[index % PETAL_COLORS.length];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+    <rect width="80" height="80" rx="40" fill="${shirt}"/>
+    <circle cx="40" cy="36" r="23" fill="${skin}"/>
+    <path d="M18 35c2-19 13-28 29-25 13 3 20 13 18 27-13-3-25-8-37-1-3 2-6 2-10-1z" fill="${hair}"/>
+    <circle cx="32" cy="38" r="2.4" fill="#150f14"/>
+    <circle cx="48" cy="38" r="2.4" fill="#150f14"/>
+    <path d="M32 51c5 4 12 4 17 0" fill="none" stroke="#150f14" stroke-width="3" stroke-linecap="round"/>
+    <path d="M18 80c3-15 15-24 22-24s19 9 22 24" fill="#f4e8d0" opacity=".82"/>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 function makeMockPetals(count = 12): BloomPetal[] {
   return Array.from({ length: count }, (_, i) => ({
     id: `review-petal-${i}`,
@@ -15,6 +31,7 @@ function makeMockPetals(count = 12): BloomPetal[] {
     pulse: i * 117,
     userId: `review-${i}`,
     userName: mockNames[i % mockNames.length],
+    userAvatarUrl: mockAvatar(i),
   }));
 }
 
@@ -51,7 +68,13 @@ function ReviewFlower({
             }
           >
             <span className="cbr-petal__stem" />
-            <span className="cbr-petal__face">{initialFor(isMine ? 'You' : petal.userName)}</span>
+            <span className="cbr-petal__face">
+              {petal.userAvatarUrl ? (
+                <img src={petal.userAvatarUrl} alt="" draggable={false} />
+              ) : (
+                initialFor(isMine ? 'You' : petal.userName)
+              )}
+            </span>
           </span>
         );
       })}
@@ -92,12 +115,14 @@ function MiniStage({
           <span className="cbr-missing__seal">?</span>
           <strong>Your avatar is the game piece.</strong>
           <p>Generate an Aigram avatar first, then come back and plant yourself.</p>
-          <span className="cbr-missing__button">Generate avatar</span>
+          <span className="cbr-missing__button">Generate avatar first</span>
         </div>
       )}
       <footer className="cbr-stage__action">
-        <span className="cbr-action__avatar">{isMissing ? '?' : 'Y'}</span>
-        <span>{isMissing ? 'Generate avatar' : 'Plant my face'}</span>
+        <span className="cbr-action__avatar">
+          {isMissing ? '?' : <img src={mockAvatar(24)} alt="" draggable={false} />}
+        </span>
+        <span>{isMissing ? 'Generate avatar first' : 'Plant my face'}</span>
       </footer>
       <span className="cbr-stage__label">{title}</span>
     </section>
@@ -112,13 +137,13 @@ export default function ReviewPage() {
           <div className="cbr-hero__kicker">Crowd Bloom review build</div>
           <h1>最终上线画面</h1>
           <p>
-            玩家打开后看到的是右侧这张完整单屏：自己的头像作为花瓣种入公共花，
-            其他玩家头像围成花冠，底部只有一个仪式按钮。
+            玩家打开后看到的是右侧这张完整单屏：真实头像会被裁成圆形，
+            放进椭圆花瓣中央；底部按钮也显示自己的头像。
           </p>
           <div className="cbr-showcase__legend">
-            <span>椭圆花瓣 = 玩家头像</span>
+            <span>椭圆外形 = 花瓣容器</span>
+            <span>圆形图片 = 玩家头像</span>
             <span>粉色光晕 = 当前玩家</span>
-            <span>点击他人花瓣 = 打开主页</span>
           </div>
           <div className="cbr-hero__links">
             <a href="?play=1">查看真实游戏空环境</a>
@@ -148,13 +173,13 @@ export default function ReviewPage() {
 
       <section className="cbr-flow" aria-label="Review screens">
         <MiniStage
-          title="01 / 有头像"
-          caption="头像会成为可种下的游戏元素。"
+            title="01 / 有头像"
+          caption="头像会显示在椭圆花瓣中央。"
           mode="ready"
         />
         <MiniStage
           title="02 / 无头像"
-          caption="没有头像时不让玩家进入空玩法。"
+          caption="没有头像时不能种花，只显示生成头像引导。"
           mode="missing"
         />
         <MiniStage
