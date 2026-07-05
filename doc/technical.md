@@ -15,7 +15,7 @@
 - `src/App.tsx` / `src/App.less`：应用壳和全局 reset；非 Aigram 环境默认进入评审页，`?play=1` 可进入真实空环境。
 - `src/CrowdBloom/CrowdBloom.tsx`：主 UI，渲染公共花、可点击头像花瓣、主按钮和头像缺失 sheet。
 - `src/CrowdBloom/CrowdBloom.less`：完整视觉系统、布局和动画。
-- `src/CrowdBloom/ReviewPage.tsx` / `ReviewPage.less`：线上评审页，静态展示 ready、missing-avatar、planted、community 四个状态，解释花瓣含义和迁移 zip。
+- `src/CrowdBloom/ReviewPage.tsx` / `ReviewPage.less`：线上评审页，第一屏展示最终成品手机预览，后续静态展示 ready、missing-avatar、planted、community 四个状态，解释花瓣含义和迁移 zip。
 - `src/CrowdBloom/hooks/useCrowdBloom.ts`：当前用户资料、存档 mirror、社区花瓣读取、plant 行为、头像编辑系统调用。
 - `src/CrowdBloom/i18n/index.ts`：zh/en 轻量 i18n，所有用户可见文案走 `t()`。
 - `src/CrowdBloom/utils/sounds.ts`：Web Audio 合成音效。
@@ -27,7 +27,7 @@
 ## 3. 核心模块
 
 - 状态管理：`useCrowdBloom()` 持有 `mode`、当前 `profile`、`mirror` 存档、`community` 花瓣、冷却时间和响应式 scale。
-- 评审模式：`App.tsx` 检查 `isInAigram` 和 URL 参数；非 Aigram 且未带 `?play=1` 时渲染 `ReviewPage`，避免线上预览因缺少平台头像数据而只看到无语义 demo 花瓣。
+- 评审模式：`App.tsx` 检查 `isInAigram` 和 URL 参数；非 Aigram 且未带 `?play=1` 时渲染 `ReviewPage`，第一屏先给出最终成品效果，再列出所有状态，避免线上预览因缺少平台头像数据而只看到无语义 demo 花瓣。
 - 主循环/动画：没有 JS 物理循环；公共花慢速旋转、花瓣 bob、当前用户 halo、萤火虫和 `+1` 反馈全部由 CSS keyframes 驱动。
 - 屏幕适配：`FIELD_W=390`、`FIELD_H=680`，根据 `window.innerWidth/innerHeight` 计算 scale，stage 保持 24px 圆角裁剪。
 - 存档：`useGameSave<BloomSave>('crowd-bloom')` 只用于初始读取和写入；代码用本地 `mirror` seeded once 作为 source of truth，避免 `savedData` stale overwrite。
